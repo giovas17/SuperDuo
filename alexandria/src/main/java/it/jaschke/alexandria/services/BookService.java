@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +22,7 @@ import java.net.URL;
 
 import it.jaschke.alexandria.MainActivity;
 import it.jaschke.alexandria.R;
+import it.jaschke.alexandria.Utils.Utilities;
 import it.jaschke.alexandria.data.AlexandriaContract;
 
 
@@ -127,9 +129,15 @@ public class BookService extends IntentService {
             if (buffer.length() == 0) {
                 return;
             }
+            Utilities.setNetworkStatus(getApplicationContext(),Utilities.STATUS_OK);
             bookJsonString = buffer.toString();
+            JSONParser(bookJsonString,ean);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error ", e);
+            if (!Utilities.isNetworkAvailable(getApplicationContext()))
+                Utilities.setNetworkStatus(getApplicationContext(),Utilities.STATUS_SERVER_DOWN);
+            else
+                Utilities.setNetworkStatus(getApplicationContext(),Utilities.STATUS_SERVER_INVALID);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -139,11 +147,15 @@ public class BookService extends IntentService {
                     reader.close();
                 } catch (final IOException e) {
                     Log.e(LOG_TAG, "Error closing stream", e);
+
                 }
             }
 
         }
 
+    }
+
+    private void JSONParser(String jsonStr, String query){
         final String ITEMS = "items";
 
         final String VOLUME_INFO = "volumeInfo";
@@ -157,7 +169,7 @@ public class BookService extends IntentService {
         final String IMG_URL = "thumbnail";
 
         try {
-            JSONObject bookJson = new JSONObject(bookJsonString);
+            JSONObject bookJson = new JSONObject(jsonStr);
             JSONArray bookArray;
             if(bookJson.has(ITEMS)){
                 bookArray = bookJson.getJSONArray(ITEMS);
@@ -187,13 +199,13 @@ public class BookService extends IntentService {
                 imgUrl = bookInfo.getJSONObject(IMG_URL_PATH).getString(IMG_URL);
             }
 
-            writeBackBook(ean, title, subtitle, desc, imgUrl);
+            writeBackBook(query, title, subtitle, desc, imgUrl);
 
             if(bookInfo.has(AUTHORS)) {
-                writeBackAuthors(ean, bookInfo.getJSONArray(AUTHORS));
+                writeBackAuthors(query, bookInfo.getJSONArray(AUTHORS));
             }
             if(bookInfo.has(CATEGORIES)){
-                writeBackCategories(ean,bookInfo.getJSONArray(CATEGORIES) );
+                writeBackCategories(query,bookInfo.getJSONArray(CATEGORIES) );
             }
 
         } catch (JSONException e) {
