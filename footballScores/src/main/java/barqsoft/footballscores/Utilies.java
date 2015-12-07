@@ -1,5 +1,8 @@
 package barqsoft.footballscores;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by yehya khaled on 3/3/2015.
  */
@@ -10,15 +13,19 @@ public class Utilies
     public static final int CHAMPIONS_LEAGUE = 362;
     public static final int PRIMERA_DIVISION = 358;
     public static final int BUNDESLIGA = 351;
+    public static final int LIGUE1 = 396;
+    public static final int EREDIVISIE = 404;
     public static String getLeague(int league_num)
     {
         switch (league_num)
         {
-            case SERIE_A : return "Seria A";
+            case SERIE_A : return "Serie A";
             case PREMIER_LEGAUE : return "Premier League";
             case CHAMPIONS_LEAGUE : return "UEFA Champions League";
             case PRIMERA_DIVISION : return "Primera Division";
             case BUNDESLIGA : return "Bundesliga";
+            case LIGUE1 : return "Ligue 1";
+            case EREDIVISIE : return "Eredivisie";
             default: return "Not known League Please report";
         }
     }
@@ -84,4 +91,12 @@ public class Utilies
             default: return R.drawable.no_icon;
         }
     }
+
+    public static String getFragmentDate(int offSet) {
+        Date fragmentdate = new Date(System.currentTimeMillis() + (offSet * 86400000));
+        SimpleDateFormat mformat = new SimpleDateFormat("yyyy-MM-dd");
+        return mformat.format(fragmentdate);
+    }
 }
+
+
