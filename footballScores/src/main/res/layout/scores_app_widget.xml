@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
-    android:contentDescription="widget"
+    android:contentDescription="@string/widget_content_description"
     android:orientation="vertical">
 
     <TextView
@@ -13,14 +13,14 @@
         android:background="#000"
         android:gravity="center"
         android:contentDescription="@string/app_name"
-        android:text="Today's Game"
+        android:text="@string/tittle_widget"
         android:textColor="#fff"
         android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:contentDescription="teams"
+        android:contentDescription="@string/layout_content_description"
         android:orientation="horizontal"
         android:padding="15sp">
 
